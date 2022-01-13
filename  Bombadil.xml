@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <domain type='kvm'>
   <name>Bombadil</name>
-  <uuid>6e2bd075-63bc-cdb6-8fd9-8c551a1121cb</uuid>
+  <uuid>d31b575a-f899-1b82-da4f-356263d98b79</uuid>
   <description>Jared&apos;s Gaming VM</description>
   <metadata>
-    <vmtemplate xmlns="unraid" name="Windows 10" icon="windows.png" os="windows10"/>
+    <vmtemplate xmlns="unraid" name="Windows 11" icon="windows11.png" os="windowstpm"/>
   </metadata>
   <memory unit='KiB'>16777216</memory>
   <currentMemory unit='KiB'>16777216</currentMemory>
@@ -24,13 +24,10 @@
     <vcpupin vcpu='8' cpuset='4'/>
     <vcpupin vcpu='9' cpuset='18'/>
   </cputune>
-  <resource>
-    <partition>/machine</partition>
-  </resource>
   <os>
-    <type arch='x86_64' machine='pc-i440fx-5.1'>hvm</type>
-    <loader readonly='yes' type='pflash'>/usr/share/qemu/ovmf-x64/OVMF_CODE-pure-efi.fd</loader>
-    <nvram>/etc/libvirt/qemu/nvram/6e2bd075-63bc-cdb6-8fd9-8c551a1121cb_VARS-pure-efi.fd</nvram>
+    <type arch='x86_64' machine='pc-i440fx-6.1'>hvm</type>
+    <loader readonly='yes' type='pflash'>/usr/share/qemu/ovmf-x64/OVMF_CODE-pure-efi-tpm.fd</loader>
+    <nvram>/etc/libvirt/qemu/nvram/d31b575a-f899-1b82-da4f-356263d98b79_VARS-pure-efi-tpm.fd</nvram>
   </os>
   <features>
     <acpi/>
@@ -55,36 +52,52 @@
   <on_crash>restart</on_crash>
   <devices>
     <emulator>/usr/local/sbin/qemu</emulator>
+    <!-- Windows 11 install drive -->
     <disk type='file' device='disk'>
       <driver name='qemu' type='raw' cache='writeback'/>
-      <source file='/mnt/user/domains/Bombadil/win10.img'/>
+      <source file='/mnt/user/domains/Bombadil/win11.img'/>
       <target dev='hdc' bus='virtio'/>
       <boot order='1'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
     </disk>
-    <controller type='usb' index='0' model='ich9-ehci1'>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x7'/>
-    </controller>
-    <controller type='usb' index='0' model='ich9-uhci1'>
-      <master startport='0'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0' multifunction='on'/>
-    </controller>
-    <controller type='usb' index='0' model='ich9-uhci2'>
-      <master startport='2'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x1'/>
-    </controller>
-    <controller type='usb' index='0' model='ich9-uhci3'>
-      <master startport='4'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x2'/>
-    </controller>
+    <!-- Old Windows 10 install drive -->
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='raw' cache='writeback'/>
+      <source file='/mnt/user/domains/Bombadil/win10.img'/>
+      <target dev='hdd' bus='virtio'/>
+      <boot order='3'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
+    </disk>
+    <!-- "CD" drive -->
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/mnt/user/isos/Windows/Win11_English_x64v1.iso'/>
+      <target dev='hda' bus='ide'/>
+      <readonly/>
+      <boot order='2'/>
+      <address type='drive' controller='0' bus='0' target='0' unit='0'/>
+    </disk>
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/mnt/user/isos/virtio/virtio-win-0.1.208.iso'/>
+      <target dev='hdb' bus='ide'/>
+      <readonly/>
+      <address type='drive' controller='0' bus='0' target='0' unit='1'/>
+    </disk>
     <controller type='pci' index='0' model='pci-root'/>
+    <controller type='ide' index='0'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1'/>
+    </controller>
     <controller type='virtio-serial' index='0'>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
     </controller>
+    <controller type='usb' index='0' model='qemu-xhci' ports='15'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>
+    </controller>
     <interface type='bridge'>
-      <mac address='52:54:00:9f:cb:2e'/>
+      <mac address='52:54:00:47:96:9e'/>
       <source bridge='br0'/>
-      <model type='virtio'/>
+      <model type='virtio-net'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
     </interface>
     <serial type='pty'>
@@ -101,7 +114,11 @@
     </channel>
     <input type='mouse' bus='ps2'/>
     <input type='keyboard' bus='ps2'/>
+    <tpm model='tpm-tis'>
+      <backend type='emulator' version='2.0' persistent_state='yes'/>
+    </tpm>
     <audio id='1' type='none'/>
+    <!-- 65:00.0 VGA compatible controller: NVIDIA Corporation GP104 [GeForce GTX 1080] (rev a1) -->
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <driver name='vfio'/>
       <source>
@@ -110,6 +127,7 @@
       <rom file='/mnt/user/isos/vbios/working_1080.rom'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0' multifunction='on'/>
     </hostdev>
+    <!-- 65:00.1 Audio device: NVIDIA Corporation GP104 High Definition Audio Controller (rev a1) -->
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <driver name='vfio'/>
       <source>
@@ -117,22 +135,23 @@
       </source>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x1'/>
     </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <driver name='vfio'/>
-      <source>
-        <address domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x08' function='0x0'/>
-    </hostdev>
+    <!-- b4:00.0 USB controller: Renesas Technology Corp. uPD720202 USB 3.0 Host Controller (rev 02) -->
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <driver name='vfio'/>
       <source>
         <address domain='0x0000' bus='0xb4' slot='0x00' function='0x0'/>
       </source>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x08' function='0x0'/>
+    </hostdev>
+    <!-- 04:00.0 USB controller: ASMedia Technology Inc. ASM2142 USB 3.1 Host Controller -->
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <driver name='vfio'/>
+      <source>
+        <address domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
+      </source>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x09' function='0x0'/>
     </hostdev>
     <memballoon model='none'/>
   </devices>
-  <seclabel type='dynamic' model='dac' relabel='yes'/>
 </domain>
 
