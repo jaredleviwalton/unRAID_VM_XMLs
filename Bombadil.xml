@@ -4,25 +4,25 @@
   <uuid>d31b575a-f899-1b82-da4f-356263d98b79</uuid>
   <description>Jared&apos;s Gaming VM</description>
   <metadata>
-    <vmtemplate xmlns="unraid" name="Windows 11" icon="windows11.png" os="windowstpm"/>
+    <vmtemplate xmlns="unraid" name="Windows 11" icon="windows11.png" os="windowstpm" />
   </metadata>
   <memory unit='KiB'>16777216</memory>
   <currentMemory unit='KiB'>16777216</currentMemory>
   <memoryBacking>
-    <nosharepages/>
+    <nosharepages />
   </memoryBacking>
   <vcpu placement='static'>10</vcpu>
   <cputune>
-    <vcpupin vcpu='0' cpuset='0'/>
-    <vcpupin vcpu='1' cpuset='14'/>
-    <vcpupin vcpu='2' cpuset='1'/>
-    <vcpupin vcpu='3' cpuset='15'/>
-    <vcpupin vcpu='4' cpuset='2'/>
-    <vcpupin vcpu='5' cpuset='16'/>
-    <vcpupin vcpu='6' cpuset='3'/>
-    <vcpupin vcpu='7' cpuset='17'/>
-    <vcpupin vcpu='8' cpuset='4'/>
-    <vcpupin vcpu='9' cpuset='18'/>
+    <vcpupin vcpu='0' cpuset='0' />
+    <vcpupin vcpu='1' cpuset='14' />
+    <vcpupin vcpu='2' cpuset='1' />
+    <vcpupin vcpu='3' cpuset='15' />
+    <vcpupin vcpu='4' cpuset='2' />
+    <vcpupin vcpu='5' cpuset='16' />
+    <vcpupin vcpu='6' cpuset='3' />
+    <vcpupin vcpu='7' cpuset='17' />
+    <vcpupin vcpu='8' cpuset='4' />
+    <vcpupin vcpu='9' cpuset='18' />
   </cputune>
   <os>
     <type arch='x86_64' machine='pc-i440fx-6.1'>hvm</type>
@@ -30,22 +30,22 @@
     <nvram>/etc/libvirt/qemu/nvram/d31b575a-f899-1b82-da4f-356263d98b79_VARS-pure-efi-tpm.fd</nvram>
   </os>
   <features>
-    <acpi/>
-    <apic/>
+    <acpi />
+    <apic />
     <hyperv>
-      <relaxed state='on'/>
-      <vapic state='on'/>
-      <spinlocks state='on' retries='8191'/>
-      <vendor_id state='on' value='none'/>
+      <relaxed state='on' />
+      <vapic state='on' />
+      <spinlocks state='on' retries='8191' />
+      <vendor_id state='on' value='none' />
     </hyperv>
   </features>
   <cpu mode='host-passthrough' check='none' migratable='on'>
-    <topology sockets='1' dies='1' cores='5' threads='2'/>
-    <cache mode='passthrough'/>
+    <topology sockets='1' dies='1' cores='5' threads='2' />
+    <cache mode='passthrough' />
   </cpu>
   <clock offset='localtime'>
-    <timer name='hypervclock' present='yes'/>
-    <timer name='hpet' present='no'/>
+    <timer name='hypervclock' present='yes' />
+    <timer name='hpet' present='no' />
   </clock>
   <on_poweroff>destroy</on_poweroff>
   <on_reboot>restart</on_reboot>
@@ -53,112 +53,114 @@
   <devices>
     <emulator>/usr/local/sbin/qemu</emulator>
     <!-- Windows 11 install drive -->
-    <disk type='file' device='disk'>
-      <driver name='qemu' type='raw' cache='writeback'/>
-      <source file='/mnt/user/domains/Bombadil/win11.img'/>
-      <target dev='hdc' bus='virtio'/>
-      <boot order='1'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
-    </disk>
+    <!-- <disk type='file' device='disk'>
+      <driver name='qemu' type='raw' cache='writeback' />
+      <source file='/mnt/user/domains/Bombadil/win11.img' />
+      <target dev='hdc' bus='virtio' />
+      <boot order='1' />
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0' />
+    </disk> -->
     <!-- Old Windows 10 install drive -->
-    <disk type='file' device='disk'>
-      <driver name='qemu' type='raw' cache='writeback'/>
-      <source file='/mnt/user/domains/Bombadil/win10.img'/>
-      <target dev='hdd' bus='virtio'/>
-      <boot order='3'/>
+    <!-- <disk type='file' device='disk'>
+      <driver name='qemu' type='raw' cache='writeback' />
+      <source file='/mnt/user/domains/Bombadil/win10.img' />
+      <target dev='hdd' bus='virtio' />
+      <boot order='3' />
       <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
-    </disk>
+    </disk> -->
     <!-- "CD" drive -->
+    <!-- <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw' />
+      <source
+        file='/mnt/user/isos/Windows/en-us_windows_10_consumer_editions_version_22h2_updated_dec_2022_x64_dvd_ee4b259d.iso' />
+      <target dev='hda' bus='ide' />
+      <readonly />
+      <boot order='2' />
+      <address type='drive' controller='0' bus='0' target='0' unit='0' />
+    </disk> -->
     <disk type='file' device='cdrom'>
-      <driver name='qemu' type='raw'/>
-      <source file='/mnt/user/isos/Windows/Win11_English_x64v1.iso'/>
-      <target dev='hda' bus='ide'/>
-      <readonly/>
-      <boot order='2'/>
-      <address type='drive' controller='0' bus='0' target='0' unit='0'/>
+      <driver name='qemu' type='raw' />
+      <source file='/mnt/user/isos/virtio/virtio-win-0.1.208.iso' />
+      <target dev='hdb' bus='ide' />
+      <readonly />
+      <address type='drive' controller='0' bus='0' target='0' unit='1' />
     </disk>
-    <disk type='file' device='cdrom'>
-      <driver name='qemu' type='raw'/>
-      <source file='/mnt/user/isos/virtio/virtio-win-0.1.208.iso'/>
-      <target dev='hdb' bus='ide'/>
-      <readonly/>
-      <address type='drive' controller='0' bus='0' target='0' unit='1'/>
-    </disk>
-    <controller type='pci' index='0' model='pci-root'/>
+    <controller type='pci' index='0' model='pci-root' />
     <controller type='ide' index='0'>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1' />
     </controller>
     <controller type='virtio-serial' index='0'>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0' />
     </controller>
     <controller type='usb' index='0' model='qemu-xhci' ports='15'>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0' />
     </controller>
     <interface type='bridge'>
-      <mac address='52:54:00:47:96:9e'/>
-      <source bridge='br0'/>
-      <model type='virtio-net'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
+      <mac address='52:54:00:47:96:9e' />
+      <source bridge='br0' />
+      <model type='virtio-net' />
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0' />
     </interface>
     <serial type='pty'>
       <target type='isa-serial' port='0'>
-        <model name='isa-serial'/>
+        <model name='isa-serial' />
       </target>
     </serial>
     <console type='pty'>
-      <target type='serial' port='0'/>
+      <target type='serial' port='0' />
     </console>
     <channel type='unix'>
-      <target type='virtio' name='org.qemu.guest_agent.0'/>
-      <address type='virtio-serial' controller='0' bus='0' port='1'/>
+      <target type='virtio' name='org.qemu.guest_agent.0' />
+      <address type='virtio-serial' controller='0' bus='0' port='1' />
     </channel>
-    <input type='mouse' bus='ps2'/>
-    <input type='keyboard' bus='ps2'/>
+    <input type='mouse' bus='ps2' />
+    <input type='keyboard' bus='ps2' />
     <tpm model='tpm-tis'>
-      <backend type='emulator' version='2.0' persistent_state='yes'/>
+      <backend type='emulator' version='2.0' persistent_state='yes' />
     </tpm>
-    <audio id='1' type='none'/>
+    <audio id='1' type='none' />
     <!-- 65:00.0 VGA compatible controller: NVIDIA Corporation GP104 [GeForce GTX 1080] (rev a1) -->
     <hostdev mode='subsystem' type='pci' managed='yes'>
-      <driver name='vfio'/>
+      <driver name='vfio' />
       <source>
-        <address domain='0x0000' bus='0x65' slot='0x00' function='0x0'/>
+        <address domain='0x0000' bus='0x65' slot='0x00' function='0x0' />
       </source>
-      <rom file='/mnt/user/isos/vbios/working_1080.rom'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0' multifunction='on'/>
+      <rom file='/mnt/user/isos/vbios/working_1080.rom' />
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0' multifunction='on' />
     </hostdev>
     <!-- 65:00.1 Audio device: NVIDIA Corporation GP104 High Definition Audio Controller (rev a1) -->
     <hostdev mode='subsystem' type='pci' managed='yes'>
-      <driver name='vfio'/>
+      <driver name='vfio' />
       <source>
-        <address domain='0x0000' bus='0x65' slot='0x00' function='0x1'/>
+        <address domain='0x0000' bus='0x65' slot='0x00' function='0x1' />
       </source>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x1'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x1' />
     </hostdev>
     <!-- b4:00.0 USB controller: Renesas Technology Corp. uPD720202 USB 3.0 Host Controller (rev 02) -->
     <hostdev mode='subsystem' type='pci' managed='yes'>
-      <driver name='vfio'/>
+      <driver name='vfio' />
       <source>
-        <address domain='0x0000' bus='0xb4' slot='0x00' function='0x0'/>
+        <address domain='0x0000' bus='0xb4' slot='0x00' function='0x0' />
       </source>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x08' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x08' function='0x0' />
     </hostdev>
     <!-- 04:00.0 USB controller: ASMedia Technology Inc. ASM2142 USB 3.1 Host Controller -->
     <hostdev mode='subsystem' type='pci' managed='yes'>
-      <driver name='vfio'/>
+      <driver name='vfio' />
       <source>
-        <address domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
+        <address domain='0x0000' bus='0x04' slot='0x00' function='0x0' />
       </source>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x09' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x09' function='0x0' />
     </hostdev>
     <!-- b3:00.0 NVMe SSD controller -->
     <hostdev mode='subsystem' type='pci' managed='yes'>
-      <driver name='vfio'/>
+      <driver name='vfio' />
       <source>
-        <address domain='0x0000' bus='0xb3' slot='0x00' function='0x0'/>
+        <address domain='0x0000' bus='0xb3' slot='0x00' function='0x0' />
       </source>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x0A' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x0A' function='0x0' />
+      <boot order='1' />
     </hostdev>
-    <memballoon model='none'/>
+    <memballoon model='none' />
   </devices>
 </domain>
